@@ -23,7 +23,7 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.Arrays;
 import java.util.List;
 
-public class Login extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
     Button Login;
     FirebaseAuth firebaseAuth;
     FirebaseUser user;
@@ -55,8 +55,8 @@ public class Login extends AppCompatActivity {
                            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth1) {
                             user = firebaseAuth1.getCurrentUser();
                             if (user != null) {
-                                Toast.makeText(Login.this,"Welcome back "+user.getDisplayName(),Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(Login.this, MainActivity.class);
+                                Toast.makeText(LoginActivity.this,"Welcome back "+user.getDisplayName(),Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 startActivity(intent);
                             }
                             else {

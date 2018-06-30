@@ -11,4 +11,8 @@
     <string name="your_mood">YOUR MOOD</string>
     <string name="login_or_signup">LOGIN OR SIGNUP</string>
     <string name="logout">Logout</string>
+    <string name="icon">Icon</string>
+    <string name="moodicon">moodIcon</string>
+    <string name="upload_image">Upload Image</string>
+    <string name="upload_video">Upload Video</string>
 </resources>

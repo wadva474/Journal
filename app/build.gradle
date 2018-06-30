@@ -9,7 +9,8 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        android.defaultConfig.vectorDrawables.useSupportLibrary=true
+        android.defaultConfig.vectorDrawables.useSupportLibrary = true
+
     }
     buildTypes {
         release {
@@ -27,9 +28,14 @@ dependencies {
 //fireBase
     implementation 'com.google.firebase:firebase-auth:16.0.2'
     implementation 'com.google.firebase:firebase-core:16.0.1'
+
+//fireBaseUi
     implementation 'com.firebaseui:firebase-ui-auth:4.0.1'
-//Picasso
-    implementation 'com.squareup.picasso:picasso:2.5.2'
+
+
+//fireBase database
+    implementation 'com.google.firebase:firebase-database:16.0.1'
+    implementation 'com.firebaseui:firebase-ui-database:0.4.1'
 
 //RoomDataBase
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
@@ -38,7 +44,12 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:1.1.1"
     annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
 
+//Butterknife dependency
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
+//Glide Dependency
+    implementation 'com.github.bumptech.glide:glide:4.7.1'
 
 
     testImplementation 'junit:junit:4.12'
