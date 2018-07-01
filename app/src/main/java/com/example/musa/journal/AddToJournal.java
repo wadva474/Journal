@@ -118,11 +118,11 @@ public class AddToJournal extends AppCompatActivity {
            assert id != null;
            databaseReference.child(id).setValue(mMood);
            Toast.makeText(AddToJournal.this,"Mood Added",Toast.LENGTH_SHORT).show();
+           finish();
         }
         else {
            Toast.makeText(AddToJournal.this, "Enter a valid Mood", Toast.LENGTH_SHORT).show();
        }
-       finish();
         }
         public void Getters(){
         if (moodEditText.getText()!=null && imageUri!=null ) {
@@ -150,7 +150,7 @@ public class AddToJournal extends AppCompatActivity {
             imageUri=intent.getData();
             uploadImageButton.setVisibility(View.GONE);
             showImage.setVisibility(View.VISIBLE);
-            Log.d("dick",Boolean.toString(intent.getData() == null));
+            Log.d("isImage",Boolean.toString(intent.getData() == null));
             Glide.with(this).load(imageUri).into(showImage);
         }
     }

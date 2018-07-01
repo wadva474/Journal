@@ -7,23 +7,16 @@ import android.widget.TextView;
 
 import com.example.musa.journal.R;
 
-public class MoodRecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public class MoodRecyclerViewHolder extends RecyclerView.ViewHolder {
     public TextView mMood;
-    public   TextView mDescription;
+    public TextView mDescription;
     public ImageView mImage;
 
 
     public MoodRecyclerViewHolder(View itemView) {
         super(itemView);
-        mMood= itemView.findViewById(R.id.moodView);
-        mDescription= itemView.findViewById(R.id.descriptionView);
-        mImage=itemView.findViewById(R.id.showimageView);
-
-        itemView.setOnClickListener(this);
-    }
-
-    @Override
-    public void onClick(View v) {
-        int position=getAdapterPosition();
+        mMood = itemView.findViewById(R.id.moodView);
+        mDescription = itemView.findViewById(R.id.descriptionView);
+        mImage = itemView.findViewById(R.id.showimageView);
     }
 }

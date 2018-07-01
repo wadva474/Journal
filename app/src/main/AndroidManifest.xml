@@ -9,8 +9,9 @@
         android:required="true" />
 
     <application
+        android:name="com.example.musa.journal.AppDataBase.FirebasePersistence"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/appicon"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -27,7 +28,7 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".AddToJournal"
             android:theme="@style/AppTheme" />
@@ -40,7 +41,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".updateMoodActivity"></activity>
+        <activity android:name=".updateMoodActivity"/>
     </application>
 
 </manifest>

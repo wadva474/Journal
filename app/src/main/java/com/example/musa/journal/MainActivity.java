@@ -21,12 +21,15 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.musa.journal.AppAdapter.MoodRecyclerViewHolder;
 import com.example.musa.journal.AppDataBase.Mood;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
     RecyclerView recyclerView;
+    static String id;
     FirebaseRecyclerAdapter<Mood,MoodRecyclerViewHolder> firebaseRecyclerAdapter;
 
 
@@ -51,29 +55,29 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar =findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         recyclerView=findViewById(R.id.moodRecyclerView);
         if (firebaseDatabase== null) {
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            firebaseDatabase = database;
+            firebaseDatabase = FirebaseDatabase.getInstance();
         }
         firebaseAuth = FirebaseAuth.getInstance();
         databaseReference=firebaseDatabase.getReference("moods").child(Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid());
        GridLayoutManager manager=new GridLayoutManager(this,1,LinearLayoutManager.VERTICAL,false);
         manager.setItemPrefetchEnabled(false);
+        //Using FireBase RecyclerView To populate List of Moods
         firebaseRecyclerAdapter=new FirebaseRecyclerAdapter<Mood, MoodRecyclerViewHolder>(Mood.class,R.layout.list_layout_for_mood,MoodRecyclerViewHolder.class,databaseReference) {
             @Override
-            protected void populateViewHolder(final MoodRecyclerViewHolder viewHolder, Mood model, final int position) {
-                String id=getRef(position).getKey();
+            protected void populateViewHolder(final MoodRecyclerViewHolder viewHolder, Mood model, final  int position) {
+                id= getRef(position).getKey();
                 assert id != null;
                 databaseReference.child(id).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         Iterable<DataSnapshot> dataSnapshots=dataSnapshot.getChildren();
                         for (DataSnapshot d : dataSnapshots) {
-                            String mood = String.valueOf(dataSnapshot.child("mood").getValue());
-                            String description = String.valueOf(dataSnapshot.child("description").getValue());
+                            final String mood = String.valueOf(dataSnapshot.child("mood").getValue());
+                            final String description = String.valueOf(dataSnapshot.child("description").getValue());
                             Uri imageUri=Uri.parse(String.valueOf(dataSnapshot.child("imageUri").getValue()));
 
                             viewHolder.mMood.setText(mood);
@@ -81,6 +85,15 @@ public class MainActivity extends AppCompatActivity
                             Glide.with(MainActivity.this)
                                     .load(imageUri)
                                     .into(viewHolder.mImage);
+
+                            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent=new Intent(MainActivity.this,updateMoodActivity.class);
+                                    intent.putExtra("position",id);
+                                    startActivity(intent);
+                                }
+                            });
                         }
                     }
 
@@ -91,8 +104,11 @@ public class MainActivity extends AppCompatActivity
                 });
 
 
+
             }
+
         };
+
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
@@ -102,21 +118,35 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 AlertDialog.Builder builder=new AlertDialog.Builder(MainActivity.this);
-
                 builder.setMessage("Are you sure you want to Delete?")
                         .setTitle("DELETE?")
                 .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        databaseReference.child(id).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()){
+                                    Toast.makeText(MainActivity.this, "Mood Successfully Deleted ", Toast.LENGTH_SHORT).show();
+                                    recreate();
+                                }
+                                else {
+                                    Toast.makeText(MainActivity.this,"Mood can't be Deleted at this time",Toast.LENGTH_SHORT).show();
 
-                    }
+                                }
+
+                            }
+                        });
+
+                        }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                       recreate();
                     }
                 }).create();
+                builder.show();
 
             }
         }).attachToRecyclerView(recyclerView);
@@ -126,7 +156,7 @@ public class MainActivity extends AppCompatActivity
         recyclerView.addItemDecoration(dividerItemDecoration);
 
         // Launchig the Add Mood Activity
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab =  findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -135,20 +165,20 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer =  findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView =  findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer =  findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -180,7 +210,7 @@ public class MainActivity extends AppCompatActivity
 
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -194,7 +224,7 @@ public class MainActivity extends AppCompatActivity
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer =findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
